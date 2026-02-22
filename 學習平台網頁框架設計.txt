@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>語言學習平台</title>
+    <!-- 引入 Tailwind CSS 進行快速樣式設計 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide Icons 用於圖示 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 自定義滾動條樣式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e5e7eb;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+        
+        /* 平滑過渡效果 */
+        .submenu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .submenu.open {
+            max-height: 300px;
+            opacity: 1;
+        }
+        
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+        .arrow-icon.rotate {
+            transform: rotate(180deg);
+        }
+
+        /* 關鍵按鈕的動畫效果 */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        .external-link-button-glow {
+            animation: pulse-glow 2s infinite;
+        }
+
+        #course-guide {
+            display: none; 
+        }
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen bg-gray-100 text-gray-800 font-sans overflow-hidden">
+
+    <!-- 區域 1: 頂部標題 (Header) -->
+    <header class="bg-gradient-to-r from-indigo-800 to-indigo-600 text-white shadow-2xl flex-none z-30">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            
+            <button id="menu-button" onclick="toggleSidebar()" class="md:hidden p-2 rounded-full hover:bg-indigo-700 transition-colors mr-3 focus:outline-none">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            
+            <div class="flex items-center space-x-3">
+                <i data-lucide="graduation-cap" class="w-7 h-7 md:w-8 md:h-8 text-indigo-200"></i>
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-wider">語言學習平台</h1>
+            </div>
+            <div class="text-sm opacity-80 hidden md:block italic">
+                提升你的多國語言能力
+            </div>
+        </div>
+    </header>
+
+    <!-- 主體佈局容器 -->
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <!-- Sidebar Overlay for Mobile -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()" 
+             class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden 
+                    opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+
+
+        <!-- 區域 2: 左側側列 (Sidebar) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full 
+                      md:relative md:translate-x-0 md:flex-none md:shadow-xl md:rounded-r-2xl 
+                      w-64 bg-white border-r border-gray-200 flex flex-col 
+                      z-50 overflow-y-auto shadow-2xl">
+            <div class="p-4 border-b border-gray-200 bg-gray-50 flex-none">
+                <h2 class="text-xs font-bold text-indigo-500 uppercase tracking-widest">課程導航</h2>
+            </div>
+            
+            <nav class="flex-1 py-4 space-y-2">
+                
+                <!-- 主項目：英語 -->
+                <div class="group">
+                    <button onclick="toggleMenu('english-menu', 'english-arrow')" class="w-full flex items-center justify-between px-6 py-3 text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 transition-all duration-200 focus:outline-none rounded-lg mx-2 w-[calc(100%-1rem)]">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="languages" class="w-5 h-5 text-gray-500 group-hover:text-indigo-600"></i>
+                            <span class="font-semibold">英語</span>
+                        </div>
+                        <i id="english-arrow" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 arrow-icon"></i>
+                    </button>
+                    <!-- 次分項目：英語 -->
+                    <ul id="english-menu" class="submenu bg-gray-50 border-l-4 border-indigo-400/50">
+                        <li>
+                            <!-- 已更新：英語閱讀學習網址 (327751dd36bf) -->
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/327751dd36bf', '英語閱讀學習')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-indigo-800 hover:bg-indigo-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                                    <span>英語閱讀學習</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/7095e4434415', '英語口說指導')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-indigo-800 hover:bg-indigo-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="mic" class="w-4 h-4"></i>
+                                    <span>英語口說指導</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/ddc636105d2d', '英語情境口說教練')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-indigo-800 hover:bg-indigo-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                    <span>英語情境口說教練</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 主項目：日語 -->
+                <div class="group">
+                    <button onclick="toggleMenu('japanese-menu', 'japanese-arrow')" class="w-full flex items-center justify-between px-6 py-3 text-gray-700 hover:bg-rose-100 hover:text-rose-700 transition-all duration-200 focus:outline-none rounded-lg mx-2 w-[calc(100%-1rem)]">
+                        <div class="flex items-center space-x-3">
+                            <i data-lucide="flower-2" class="w-5 h-5 text-gray-500 group-hover:text-rose-600"></i>
+                            <span class="font-semibold">日語</span>
+                        </div>
+                        <i id="japanese-arrow" data-lucide="chevron-down" class="w-4 h-4 text-gray-400 arrow-icon"></i>
+                    </button>
+                    <!-- 次分項目：日語 -->
+                    <ul id="japanese-menu" class="submenu bg-gray-50 border-l-4 border-rose-400/50">
+                        <li>
+                            <!-- 已更新：日語閱讀學習網址 -->
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/cd60618d3e22', '日語閱讀學習')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-rose-800 hover:bg-rose-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                                    <span>日語閱讀學習</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/9deb4fd7ed09', '日語口說指導')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-rose-800 hover:bg-rose-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="mic" class="w-4 h-4"></i>
+                                    <span>日語口說指導</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="loadContent(event, 'https://gemini.google.com/share/58045b040363', '日語情境口說教練')" class="block px-12 py-2.5 text-sm text-gray-600 hover:text-rose-800 hover:bg-rose-200/50 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                    <span>日語情境口說教練</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+            
+            <div class="p-4 mt-auto border-t border-gray-200 text-center flex-none">
+                <p class="text-xs text-gray-400">設計與擁有者: 薛尤榮</p>
+            </div>
+        </aside>
+
+        <!-- 區域 3: 右側顯示區域 (Main Content) -->
+        <main class="flex-1 flex flex-col bg-gray-50 h-full relative z-10">
+            <!-- 內容標題列 -->
+            <div class="bg-white px-4 sm:px-6 py-4 border-b-2 border-indigo-100 flex justify-between items-center shadow-md flex-none">
+                <h2 id="content-title" class="text-lg sm:text-xl font-bold text-gray-800 flex items-center">
+                    <i data-lucide="layout" class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-indigo-500"></i>
+                    <span id="title-text">歡迎使用</span>
+                </h2>
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <span id="hint-message" class="text-xs sm:text-sm font-medium text-orange-600 bg-orange-100 px-2 sm:px-3 py-1.5 rounded-full border border-orange-300 inline-block transition-opacity duration-300 opacity-0 shadow-inner">
+                        請點擊右側按鈕開啟課程
+                    </span>
+                    <a id="external-link" href="#" target="_blank" class="hidden text-xs sm:text-sm bg-indigo-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-indigo-700 transition flex items-center shadow-lg external-link-button-glow">
+                        <span class="font-bold">在新分頁開啟</span>
+                        <i data-lucide="external-link" class="w-4 h-4 ml-1 sm:ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 內容顯示區 -->
+            <div class="flex-1 relative w-full h-full p-4 sm:p-8 overflow-y-auto">
+                <div id="content-display" class="w-full h-full flex items-center justify-center">
+                    <!-- 初始歡迎畫面 -->
+                    <div id="welcome-screen" class="text-center p-6 sm:p-12 bg-white rounded-2xl shadow-2xl max-w-sm sm:max-w-lg transition-all duration-500 scale-100">
+                        <div class="bg-indigo-100 p-6 sm:p-8 rounded-full mb-6 mx-auto w-fit">
+                            <i data-lucide="mouse-pointer-click" class="w-12 h-12 sm:w-16 h-16 text-indigo-500"></i>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-gray-800 mb-3">歡迎來到學習中心</h3>
+                        <p class="text-md text-gray-600 mb-6">請從左側導航選擇您想學習的語言和課程。</p>
+                        
+                        <!-- iPad/iOS 語音提示區塊 -->
+                        <div id="ios-mic-tip" class="hidden mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-left">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i data-lucide="tablet" class="w-5 h-5 text-amber-600"></i>
+                                <span class="font-bold text-amber-800">iPad/iOS 使用建議</span>
+                            </div>
+                            <ul class="text-xs text-amber-700 space-y-1 list-disc list-inside">
+                                <li>若按麥克風無文字，請檢查：<b>設定 > 隱私權與安全性 > 麥克風 > 允許 Safari</b>。</li>
+                                <li>點擊課程後，請務必使用右上角「<b>在新分頁開啟</b>」按鈕，以獲得最佳錄音支援。</li>
+                                <li>建議使用 <b>Safari 瀏覽器</b> 以獲得最佳語音相容性。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 課程導引訊息 -->
+                    <div id="course-guide" class="hidden text-center p-8 sm:p-10 max-w-sm sm:max-w-xl border-4 border-indigo-400 rounded-3xl bg-indigo-50 shadow-2xl shadow-indigo-200 transform scale-95 transition-all duration-500">
+                        <i data-lucide="alert-triangle" class="w-8 h-8 sm:w-10 sm:h-10 text-red-500 mx-auto mb-4 animate-pulse"></i>
+                        <h3 class="text-xl sm:text-2xl font-bold text-indigo-800 mb-2">
+                            您已選擇：<span id="selected-course-title" class="text-red-600 underline decoration-dashed"></span>
+                        </h3>
+                        <p class="text-sm sm:text-base text-gray-700 mb-6 font-medium border-t border-indigo-300 pt-4 mt-4 text-left sm:text-center">
+                            <b>🚨 iPad 使用者注意：</b><br>
+                            Gemini 的語音辨識功能在「內嵌框架」中常因隱私權限制而失效。
+                        </p>
+                        <p class="text-xl sm:text-2xl font-extrabold text-gray-800 mt-4 mb-4">
+                            💡 **關鍵操作：立即開啟課程**
+                        </p>
+                        <i data-lucide="arrow-up-right" class="w-6 h-6 sm:w-8 sm:h-8 text-indigo-600 mx-auto animate-bounce mb-4"></i>
+                        <p class="text-base sm:text-lg text-indigo-700 font-bold">
+                            請點擊右上角藍色按鈕
+                        </p>
+                        <p class="text-lg sm:text-xl text-indigo-900 font-extrabold">
+                            「在新分頁開啟」
+                        </p>
+                        <p class="text-xs text-gray-500 mt-6 italic">
+                            *在新分頁中，iPad 才能正常彈出「麥克風使用權限」詢問窗。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 區域 4: 底部智慧財產權宣告 (Footer) -->
+            <footer class="bg-white border-t border-gray-200 py-3 flex-none text-center shadow-inner">
+                <div class="flex justify-center items-center space-x-1 mb-2">
+                    <svg class="w-6 h-6 text-gray-700" viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="14" stroke="currentColor" stroke-width="1.5" fill="white"/>
+                        <path d="M15 15.5c2.485 0 4.5-2.015 4.5-4.5S17.485 6.5 15 6.5s-4.5 2.015-4.5 4.5 2.015 4.5 4.5 4.5zM15 18c-4.418 0-8 2.015-8 4.5V23h16v-0.5c0-2.485-3.582-4.5-8-4.5z" />
+                    </svg>
+                    <svg class="w-6 h-6 text-gray-700" viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="14" stroke="currentColor" stroke-width="1.5" fill="white"/>
+                        <path d="M14.5 7.5c-2.485 0-4.5 2.015-4.5 4.5v6c0 2.485 2.015 4.5 4.5 4.5h1c2.485 0 4.5-2.015 4.5-4.5v-6c0-2.485-2.015-4.5-4.5-4.5h-1zm1 1h.5c1.933 0 3.5 1.567 3.5 3.5v6c0 1.933-1.567 3.5-3.5 3.5h-.5v1.5h-1v-1.5h-1.5v-1h1.5v-4h-1.5v-1h1.5v-4h-1.5v-1h1.5v-1.5h1zm0 2.5v1h-1v-1h1zm0 3v1h-1v-1h1z" fill="currentColor"/>
+                        <line x1="8" y1="22" x2="22" y2="8" stroke="white" stroke-width="4" stroke-linecap="round"/>
+                        <line x1="8" y1="22" x2="22" y2="8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                    <svg class="w-6 h-6 text-gray-700" viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="15" cy="15" r="14" stroke="currentColor" stroke-width="1.5" fill="white"/>
+                        <path d="M15 22.5c4.142 0 7.5-3.358 7.5-7.5H25l-4-4-4 4h2.5c0 2.761-2.239 5-5 5S10 17.761 10 15h-2.5l4-4 4 4h-2.5c0 2.761 2.239 5 5 5z"/>
+                        <path d="M15 7.5c-4.142 0-7.5 3.358-7.5 7.5H5l4 4 4-4H9.5c0-2.761 2.239-5 5-5s5 2.239 5 5h2.5l-4 4-4-4h2.5c0-2.761-2.239-5-5-5z" />
+                    </svg>
+                </div>
+
+                <p class="text-xs text-gray-500 font-medium">
+                    智慧財產權聲明 &copy; 2024. 
+                    所有權利歸屬 薛尤榮 (<a href="mailto:master.yrhsieh@gmail.com" class="text-indigo-600 hover:text-indigo-800 transition-colors" title="聯繫擁有者">master.yrhsieh@gmail.com</a>)
+                </p>
+                <p class="text-[10px] text-gray-400 mt-1">
+                    設計與內容採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_Hant" target="_blank" class="text-indigo-500 hover:text-indigo-600 underline">CC BY-NC-SA 4.0 國際授權條款</a>
+                </p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // 偵測是否為 iOS 設備 (含新版 iPad)
+        function isIOS() {
+            return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform)
+            || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+        }
+
+        if (isIOS()) {
+            document.getElementById('ios-mic-tip').classList.remove('hidden');
+        }
+
+        let isSidebarOpen = false;
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) { 
+                isSidebarOpen = !isSidebarOpen;
+                if (isSidebarOpen) {
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    overlay.classList.remove('opacity-0', 'pointer-events-none');
+                    overlay.classList.add('opacity-100');
+                } else {
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-full');
+                    overlay.classList.remove('opacity-100');
+                    overlay.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }
+        }
+
+        function toggleMenu(menuId, arrowId) {
+            const menu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
+            
+            document.querySelectorAll('.submenu').forEach(el => {
+                if(el.id !== menuId) { el.classList.remove('open'); }
+            });
+            document.querySelectorAll('.arrow-icon').forEach(el => {
+                if(el.id !== arrowId) { el.classList.remove('rotate'); }
+            });
+
+            menu.classList.toggle('open');
+            arrow.classList.toggle('rotate');
+        }
+
+        function loadContent(event, url, title) {
+            event.preventDefault();
+            const titleText = document.getElementById('title-text');
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const courseGuide = document.getElementById('course-guide');
+            const selectedCourseTitle = document.getElementById('selected-course-title');
+            const externalLink = document.getElementById('external-link');
+            const hintMessage = document.getElementById('hint-message');
+
+            welcomeScreen.classList.add('hidden');
+            courseGuide.classList.remove('hidden'); 
+            courseGuide.style.display = 'block'; 
+
+            titleText.innerText = title;
+            selectedCourseTitle.innerText = title;
+            externalLink.href = url;
+            externalLink.classList.remove('hidden');
+            externalLink.classList.add('inline-flex');
+            hintMessage.classList.remove('opacity-0');
+
+            if (window.innerWidth < 768 && isSidebarOpen) {
+                toggleSidebar();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const hintMessage = document.getElementById('hint-message');
+            hintMessage.classList.add('opacity-0');
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full', 'translate-x-0');
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                isSidebarOpen = false;
+            }
+        });
+    </script>
+</body>
+</html>
